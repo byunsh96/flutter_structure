@@ -36,7 +36,7 @@ class ApiDio {
     print('3');
     try {
       Model_board_list model_board_list = Model_board_list(
-        code: response.data['code'],
+        code: response.data['code'], 
         code_msg: response.data['code_msg'],
         list_cnt: response.data['list_cnt'],
         page_num: response.data['page_num'],
