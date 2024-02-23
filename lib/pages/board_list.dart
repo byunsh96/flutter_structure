@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:login/models/model_board_list.dart';
 import 'package:login/services/api_dio.dart';
+import 'package:login/widgets/customboardlist.dart';
 
 
 //board_list
@@ -14,8 +15,8 @@ class Board_list extends StatefulWidget {
 class _Board_list extends State<Board_list>{
   TextEditingController controller = TextEditingController();
   ApiDio apiDio = ApiDio();
-  Map<String, dynamic> board_list = {};
-  late Future<Response> response;
+  // Map<String, dynamic> board_list = {};
+  // late Future<Response> response;
   late Future<Model_board_list> _future;
   // final Model_board_list model_board_list;
 
@@ -58,12 +59,26 @@ class _Board_list extends State<Board_list>{
         //정상적으로 데이터를 가져온 경우.
         print('snapshot : ${snapshot}');
         // print('snapshot data : ${snapshot.data!.data_array['member_nickname']}');
-        if (snapshot.data != null && snapshot.data!.data_array != null) {
-          print('snapshot data : ${snapshot.data!.data_array!['member_nickname']}');
+        if (snapshot.data != null) {
+          // print(snapshot.data);
+          // print(snapshot.data![1].member_idx);
+          // print(snapshot.data![1].board_idx);
+
+
+          print('snapshot board_idx : ${snapshot.data!.data_array![1].board_idx}');
+          print('snapshot member_idx : ${snapshot.data!.data_array![1].member_idx}');
+
+          print('snapshot member_nickname : ${snapshot.data!.data_array![1].member_nickname}');
+          //
+          // print('snapshot title : ${snapshot.data!.data_array![1].title}');
+          //
+          // print('snapshot data : ${snapshot.data!.data_array![0].board_idx}');
+
+
         } else {
           print('data_array is null');
         }
-        return const Text("데이터 가져오는데 성공했습니다.");
+        return Customboardlist(title: 'dwq',memberNickname: 'dwq',contents: 'dsad',);
 
       },
     );

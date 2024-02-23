@@ -1,15 +1,11 @@
-
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:login/config/constant.dart';
 import 'package:login/models/model_board_list.dart';
 
-const baseUrl = "http://p.api.bandal.or.kr";
+const baseUrl = APIBASEURL;
 late String endPoint;
-
-
-
 
 class ApiDio {
   final storage = const FlutterSecureStorage();
@@ -27,7 +23,6 @@ class ApiDio {
       baseUrl+endPoint,
       queryParameters:data,
     );
-
     print('response.data : ${response.data}');
     print('response : ${response.runtimeType}'); //Response<dynamic>
     print('response.data : ${response.data.runtimeType}');//Map<String, dynamic>
@@ -35,15 +30,13 @@ class ApiDio {
     // // API 호출을 통해 데이터를 성공적으로 받아온 후 UI를 업데이트
     print('3');
     try {
-      Model_board_list model_board_list = Model_board_list(
-        code: response.data['code'], 
-        code_msg: response.data['code_msg'],
-        list_cnt: response.data['list_cnt'],
-        page_num: response.data['page_num'],
-        total_page: response.data['total_page'],
-        data_array: response.data['data_array'][1], // list [게시글1,게시글2,게시글3, ...]
-      );
-      print(model_board_list.runtimeType);
+      Model_board_list model_board_list = Model_board_list.fromJson(response.data);
+      print('model_board_list : ${model_board_list}'); //Model_board_list
+
+      print('model_board_list : ${model_board_list.runtimeType}'); //Model_board_list
+      print('model_board_list.data_array : ${model_board_list.data_array!.runtimeType}'); //List<dynamic>
+      print(model_board_list.data_array);
+
       print('5');
       return model_board_list;
     } catch (e) {

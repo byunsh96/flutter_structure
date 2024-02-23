@@ -1,0 +1,1 @@
+const String APIBASEURL = "http://p.api.bandal.or.kr";
