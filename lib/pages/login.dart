@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:login/services/api_dio.dart';
+import 'package:login/widgets/customlogin.dart';
 
 class LogIn extends StatefulWidget {
   @override
@@ -45,53 +46,56 @@ class _LogInState extends State<LogIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView.builder(itemBuilder: (context, index){
-        return Row(
-            children:<Widget>[
-              Expanded(
-                child: ListTile(
-                  leading: Text('${index + 1}'),
-                  title: Text('title : ${_todos[index]['title']}'),
-                  subtitle: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Flexible( // Flexible 위젯을 사용하여 버튼에 유연성 추가
-                        child: ElevatedButton(
-                          onPressed: () {
-                            apiDio.fetchLoginPost(controller.text,controller2.text);
-                          },
-                          child: Text('post'),
-                        ),
-                      ),
-                      SizedBox(width: 4), // 버튼 사이의 공간을 추가
-                      Flexible(
-                        child: TextField(
-                          controller: controller,
-                          decoration: InputDecoration(
-                            labelText: 'Enter your ID',
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 4), // 버튼 사이의 공간을 추가
-                      Flexible(
-                        child: TextField(
-                          controller: controller2,
-                          decoration: InputDecoration(
-                            labelText: 'Enter your ID',
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  trailing: IconButton(onPressed: (){
-                    print('상세보기 이동');
-                  },
-                      icon: Icon(Icons.add)),
-                ),
-              )
-            ]
-        );
-      }, itemCount: _todos.length),
+      body: CustomLogIn(),
     );
+    // return Scaffold(
+    //   body: ListView.builder(itemBuilder: (context, index){
+    //     return Row(
+    //         children:<Widget>[
+    //           Expanded(
+    //             child: ListTile(
+    //               leading: Text('${index + 1}'),
+    //               title: Text('title : ${_todos[index]['title']}'),
+    //               subtitle: Row(
+    //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                 children: [
+    //                   Flexible( // Flexible 위젯을 사용하여 버튼에 유연성 추가
+    //                     child: ElevatedButton(
+    //                       onPressed: () {
+    //                         apiDio.fetchLoginPost(controller.text,controller2.text);
+    //                       },
+    //                       child: Text('post'),
+    //                     ),
+    //                   ),
+    //                   SizedBox(width: 4), // 버튼 사이의 공간을 추가
+    //                   Flexible(
+    //                     child: TextField(
+    //                       controller: controller,
+    //                       decoration: InputDecoration(
+    //                         labelText: 'Enter your ID',
+    //                       ),
+    //                     ),
+    //                   ),
+    //                   SizedBox(width: 4), // 버튼 사이의 공간을 추가
+    //                   Flexible(
+    //                     child: TextField(
+    //                       controller: controller2,
+    //                       decoration: InputDecoration(
+    //                         labelText: 'Enter your ID',
+    //                       ),
+    //                     ),
+    //                   ),
+    //                 ],
+    //               ),
+    //               trailing: IconButton(onPressed: (){
+    //                 print('상세보기 이동');
+    //               },
+    //                   icon: Icon(Icons.add)),
+    //             ),
+    //           )
+    //         ]
+    //     );
+    //   }, itemCount: _todos.length),
+    // );
   }
 }

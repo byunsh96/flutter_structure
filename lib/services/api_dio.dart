@@ -28,7 +28,6 @@ class ApiDio {
     print('response.data : ${response.data.runtimeType}');//Map<String, dynamic>
     print('response.data[data_array] :${response.data['data_array'][0].runtimeType}'); // Map<String, dynamic>
     // // API 호출을 통해 데이터를 성공적으로 받아온 후 UI를 업데이트
-    print('3');
     try {
       Model_board_list model_board_list = Model_board_list.fromJson(response.data);
       print('model_board_list : ${model_board_list}'); //Model_board_list
@@ -37,7 +36,6 @@ class ApiDio {
       print('model_board_list.data_array : ${model_board_list.data_array!.runtimeType}'); //List<dynamic>
       print(model_board_list.data_array);
 
-      print('5');
       return model_board_list;
     } catch (e) {
       print('Model_board_list 생성 중 예외 발생: $e');
@@ -46,7 +44,7 @@ class ApiDio {
   }
 
   // login
-  Future<void> fetchLoginPost(String id, String pw ) async {
+  Future<bool> fetchLoginPost(String id, String pw ) async {
     // 데이터 값
     final postData = {
       "member_id": id,
@@ -62,27 +60,35 @@ class ApiDio {
       baseUrl + endPoint,
       data: FormData.fromMap(postData),
     );
+    print(response.data);
+
+    print(response.data['code_msg']);
+    // '-1' : 불일치 , 비밀번호 입력, 이메일 입력
+    if(response.data['code'] == "-1"){
+      return false;
+    }
 
     String? memberId = await getUserData();
 
     if(memberId == null){
       print("쿠키 없음");
 
-      if(response.data['code'] == "1000"){
-        print("Login successful");
-        // 로그인 성공하면 서버에서 헤더에 쿠키를 달아서 보내줘야 interceptors로 자동 저장이 되는데
-        // 현재 상황은 바디에 저장되어 딸려옴 따라서 따로 저장해줘야 함.
-        String userData = jsonEncode(response.data) ;
-        await saveUserData(userData);
+      print("Login successful");
 
-        print("Member ID123: $memberId");
-      }
+      String userData = jsonEncode(response.data) ;
+      await saveUserData(userData); // 세션 저장
+
+      print("Member ID123: $memberId");
+      return true;
+
     }else{
       print('쿠키 있음');
+
       print('쿠키 있음 밑 print : $memberId');
       print(memberId.runtimeType);
+      await deleteUserData(); // 세션 지우기
+      return false;
     }
-    await deleteUserData("member_id");
 
     print(response.data);
   }
@@ -135,7 +141,7 @@ class ApiDio {
   }
 
   //delete
-  Future<void> deleteUserData(String key) async {
-    await storage.delete(key: key);
+  Future<void> deleteUserData() async {
+    await storage.delete(key: "userData");
   }
 }
