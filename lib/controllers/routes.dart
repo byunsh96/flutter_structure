@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:login/models/model_board_list.dart';
+import 'package:login/pages/board_detail.dart';
 import 'package:login/pages/board_list.dart';
 import 'package:login/pages/board_reg.dart';
 import 'package:login/pages/home.dart';
@@ -12,6 +14,9 @@ class RouteGenerator{
     final String routeName = settings.name ?? '/';
     //
     switch (routeName) {
+      case '/board_detail':
+        final args = settings.arguments as Board;
+        return MaterialPageRoute(builder: (_) => Board_detail(board: args));
       case '/board_list':
         return MaterialPageRoute(builder: (_) => Board_list());
       case '/board_reg':

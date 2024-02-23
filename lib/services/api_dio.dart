@@ -95,7 +95,7 @@ class ApiDio {
       "contents": contents,
       "member_idx": "1",
       "category": "1",
-      "board_img" : "test",
+      "board_img" : "/media/commonfile/202307/17/5cabaf7efcd88b7c40326a48234c82b4.jpg",
     };
 
     //Url
