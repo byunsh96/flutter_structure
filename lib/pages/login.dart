@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:login/services/api_dio.dart';
 import 'package:login/widgets/customlogin.dart';
+import 'package:login/index/main_index.dart';
 
 class LogIn extends StatefulWidget {
   @override
@@ -25,6 +26,7 @@ class _LogInState extends State<LogIn> {
 
   ApiDio apiDio = ApiDio();
 
+
   @override
   void initState(){
     _fetchTodos();
@@ -45,6 +47,8 @@ class _LogInState extends State<LogIn> {
 
   @override
   Widget build(BuildContext context) {
+    logger.e('ewqewq');
+    flutterSecureStorage.read(key:"userData");
     return Scaffold(
       body: CustomLogIn(),
     );
