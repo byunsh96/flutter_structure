@@ -11,34 +11,29 @@ class ApiDio {
   final storage = const FlutterSecureStorage();
 
   //board_list_get
-  static Future<Model_board_list> board_list_get(String member_idx, String category, String page_num) async {
-    final data = {
+  static Future<Model_board_list> board_list_get(String member_idx, String category, int page_num) async {
+    FormData formData = FormData.fromMap({
       "member_idx": member_idx,
       "category": category,
       "page_num": page_num,
-    };
+    });
+
     endPoint = '/board_v_1_0_0/board_list';
 
-    final response = await Dio().get(
+    final response = await Dio().request(
       baseUrl+endPoint,
-      queryParameters:data,
+      options: Options(
+        method: 'POST',
+      ),
+      data:formData,
     );
-    print('response.data : ${response.data}');
-    print('response : ${response.runtimeType}'); //Response<dynamic>
-    print('response.data : ${response.data.runtimeType}');//Map<String, dynamic>
-    print('response.data[data_array] :${response.data['data_array'][0].runtimeType}'); // Map<String, dynamic>
-    // // API 호출을 통해 데이터를 성공적으로 받아온 후 UI를 업데이트
     try {
       Model_board_list model_board_list = Model_board_list.fromJson(response.data);
-      print('model_board_list : ${model_board_list}'); //Model_board_list
-
-      print('model_board_list : ${model_board_list.runtimeType}'); //Model_board_list
-      print('model_board_list.data_array : ${model_board_list.data_array!.runtimeType}'); //List<dynamic>
-      print(model_board_list.data_array);
 
       return model_board_list;
     } catch (e) {
       print('Model_board_list 생성 중 예외 발생: $e');
+
       rethrow;
     }
   }
@@ -93,6 +88,8 @@ class ApiDio {
     print(response.data);
   }
 
+
+
   //board_reg
   Future<bool> insert_board_reg(String title, String contents) async {
     // 데이터 값
@@ -126,6 +123,10 @@ class ApiDio {
       return false;
     }
   }
+  Future<bool> fetchLogoutPost() async {
+    await deleteUserData();
+    return true;
+  }
 
 
   // 로그인 후 member_id 쿠키에 저장
@@ -137,11 +138,15 @@ class ApiDio {
   //member_id 조회
   Future<String?> getUserData() async {
     String? userData = await storage.read(key: "userData");
+    if(userData == null){
+      return null;
+    }
     return userData;
   }
 
   //delete
   Future<void> deleteUserData() async {
     await storage.delete(key: "userData");
+    print('delete');
   }
 }

@@ -21,3 +21,22 @@ class LoginBTN extends StatelessWidget{
     );
   }
 }
+
+class LogoutBTN extends StatelessWidget{
+  final String label;
+  final VoidCallback? onPressed;
+
+  LogoutBTN({
+    Key? key,
+    required this.label,
+    required this.onPressed, // 옵셔널
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      child: Text(label),
+    );
+  }
+}
