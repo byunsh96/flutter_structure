@@ -127,6 +127,7 @@ class Home extends StatelessWidget {
               ),
               CustomELVbtn(text: "board_reg",url: "/board_reg"),
               CustomELVbtn(text: "board_list",url: "/board_list"),
+              CustomELVbtn(text: "image_load",url: "/image_load"),
               ElevatedButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/login');

@@ -1,5 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:dio/dio.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:login/config/constant.dart';
 import 'package:login/models/model_board_list.dart';
@@ -84,12 +87,9 @@ class ApiDio {
       await deleteUserData(); // 세션 지우기
       return false;
     }
-
     print(response.data);
   }
-
-
-
+  
   //board_reg
   Future<bool> insert_board_reg(String title, String contents) async {
     // 데이터 값
@@ -123,12 +123,48 @@ class ApiDio {
       return false;
     }
   }
+  
+  //이미지 업로드
+  Future<bool> insert_image_reg(File image) async {
+    final base64Image= await encodeImageAsBase64(image);
+
+    final postData = {
+      "image": base64Image,
+      "member_idx": "1",
+      "category": "1",
+      "board_img" : "/media/commonfile/202307/17/5cabaf7efcd88b7c40326a48234c82b4.jpg",
+    };
+
+    //Url
+    endPoint = '/board_v_1_0_0/board_reg_in';
+
+    Response response = await Dio().post(
+      baseUrl + endPoint,
+      data: FormData.fromMap(postData),
+    );
+
+    // {
+    //     "code": "1000",
+    //     "code_msg": "정상적으로 처리되었습니다."
+    // }
+
+    if(response.data['code'] == "1000"){
+      print(response.data['code_msg']);
+      return true;
+    }else{
+      print(response.data['code']);
+      print(response.data['code_msg']);
+      return false;
+    }
+  }
+  
+  
+  //로그아웃
   Future<bool> fetchLogoutPost() async {
     await deleteUserData();
     return true;
   }
-
-
+  
   // 로그인 후 member_id 쿠키에 저장
   // json으로 넣어버릴 예정
   Future<void> saveUserData(String userData) async {
@@ -148,5 +184,38 @@ class ApiDio {
   Future<void> deleteUserData() async {
     await storage.delete(key: "userData");
     print('delete');
+  }
+
+  //이미지 바이트 데이터로 변환
+  Future<List<int>> encodeImageAsBytes(File image) async {
+    List<int> imageBytes = await image.readAsBytes();
+    // FormData formData = FormData.fromMap({
+    //   "file": MultipartFile.fromBytes(imageBytes, filename: 'upload.jpg'),
+    // });
+    return imageBytes;
+  }
+  
+  //Base64 데이터로 변환
+  Future<String> encodeImageAsBase64(File image) async {
+    List<int> imageBytes = await image.readAsBytes();
+    String base64Image = base64Encode(imageBytes);
+    
+    return base64Image;
+  }
+
+  //dependencies 필요 flutter_image_compress : ^2.1.0
+  //이미지 압축 후 리사이징
+  Future<Uint8List?> encodeImageAsCompress(File image) async {
+    // 이미지를 압축 및 리사이징
+    var compressedImage = await FlutterImageCompress.compressWithFile(
+      image.absolute.path,
+      minWidth: 640,
+      minHeight: 480,
+      quality: 88,
+    );
+    // FormData formData = FormData.fromMap({
+    //   "file": MultipartFile.fromBytes(compressedImage!, filename: 'compressed.jpg'),
+    // });
+    return compressedImage;
   }
 }

@@ -4,6 +4,7 @@ import 'package:login/pages/board_detail.dart';
 import 'package:login/pages/board_list.dart';
 import 'package:login/pages/board_reg.dart';
 import 'package:login/pages/home.dart';
+import 'package:login/pages/image_load.dart';
 import 'package:login/pages/login.dart';
 
 class RouteGenerator{
@@ -20,6 +21,8 @@ class RouteGenerator{
         return MaterialPageRoute(builder: (_) => Board_list());
       case '/board_reg':
         return MaterialPageRoute(builder: (_) => Board_reg());
+      case '/image_load':
+        return MaterialPageRoute(builder: (_) => Image_load());
       case '/login':
         return MaterialPageRoute(builder: (_) => LogIn());
       default:
