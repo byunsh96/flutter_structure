@@ -1,12 +1,35 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:login/models/model_board_list.dart';
 import 'package:login/services/api_dio.dart';
 import 'package:login/widgets/custometextfiled.dart';
 import 'package:login/widgets/customtextformfield.dart';
 
 //게시글 등록
-class Board_reg extends StatelessWidget{
+class Board_reg extends StatefulWidget{
+  @override
+  _Board_regState createState() => _Board_regState();
+
+}
+class _Board_regState extends State<Board_reg>{
+  File? _image;
+
   TextEditingController controller = TextEditingController();
   ApiDio apiDio = ApiDio();
+
+  Future getImage() async {
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if(pickedFile != null){
+        _image = File(pickedFile.path); // 선택된 이미지를 _image에 저장
+      } else {
+        _image = null;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,11 +46,12 @@ class Board_reg extends StatelessWidget{
               CustomTextFormField(controller: controller2),
               ElevatedButton(
                 onPressed: () async {
-                  bool result_bool = await apiDio.insert_board_reg(controller.text, controller2.text);
-                  if(result_bool){
+                  bool result_bool = await apiDio.insert_board_reg(
+                      controller.text, controller2.text, _image!);
+                  if (result_bool) {
                     Navigator.pushNamed(context, '/');
-                  }else{
-                  //   실패
+                  } else {
+                    //   실패
                   }
                 },
                 child: Text('적용'),
@@ -36,7 +60,11 @@ class Board_reg extends StatelessWidget{
           ),
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: getImage, // 버튼을 눌렀을 때 getImage 함수 호출
+        tooltip: 'Pick Image',
+        child: Icon(Icons.add_a_photo),
+      ),
     );
   }
-
 }

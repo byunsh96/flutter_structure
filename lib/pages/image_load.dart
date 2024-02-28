@@ -11,7 +11,7 @@ class Image_load extends StatefulWidget{
 }
 class _Image_loadState extends State<Image_load>{
   File? _image;
-
+  ApiDio apiDio = ApiDio();
   Future getImage() async {
     final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
 
@@ -22,8 +22,9 @@ class _Image_loadState extends State<Image_load>{
       if(pickedFile != null){
         _image = File(pickedFile.path); // 선택된 이미지를 _image에 저장
         print(_image);
-        print('apidio fdsadffdsa : ${ApiDio().encodeImageAsBase64( _image!)}');
+        print('apidio fdsadffdsa : ${apiDio.encodeImageAsBase64( _image!)}');
       } else {
+        print(_image);
         print('no image selected');
       }
     });
@@ -33,10 +34,26 @@ class _Image_loadState extends State<Image_load>{
   Widget build(BuildContext context) {
 
     return Scaffold(
-      body:Center(
-        child: _image == null
-            ? Text('No image selected.')
-            : Image.file(_image!), // 선택된 이미지를 화면에 표시
+      body:Column(
+        children: [
+          Expanded(
+            child: Center(
+              child: _image == null
+                  ? Text('No image selected.')
+                  : Image.file(_image!), // 선택된 이미지를 화면에 표시
+            ),
+          ),
+          ElevatedButton(
+              onPressed: (){
+                if(_image != null) {
+                  apiDio.insert_image_reg(_image!);
+                }else{
+                  print('_image is null');
+                }
+              },
+              child:Text('send'),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: getImage, // 버튼을 눌렀을 때 getImage 함수 호출

@@ -6,6 +6,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:login/config/constant.dart';
 import 'package:login/models/model_board_list.dart';
+import 'package:path/path.dart' as path;
 
 const baseUrl = APIBASEURL;
 late String endPoint;
@@ -91,14 +92,17 @@ class ApiDio {
   }
   
   //board_reg
-  Future<bool> insert_board_reg(String title, String contents) async {
+  Future<bool> insert_board_reg(String title, String contents, File image) async {
+
+    final response_image = await insert_image_reg(image);
+
     // 데이터 값
     final postData = {
       "title": title,
       "contents": contents,
       "member_idx": "1",
       "category": "1",
-      "board_img" : "/media/commonfile/202307/17/5cabaf7efcd88b7c40326a48234c82b4.jpg",
+      "board_img" : response_image.data['file_path'],
     };
 
     //Url
@@ -123,42 +127,72 @@ class ApiDio {
       return false;
     }
   }
-  
+  //이미지 경로 가져오기
+  String getFileExtension(String filePath) {
+    return path.extension(filePath);
+  }
+  String getFilenameWithExtension(String filePath) {
+    return path.basename(filePath);
+  }
   //이미지 업로드
-  Future<bool> insert_image_reg(File image) async {
-    final base64Image= await encodeImageAsBase64(image);
+  Future<Response<dynamic>> insert_image_reg(File image) async {
+    // final base64Image= await encodeImageAsBase64(image); // String 다시 byte 배열로 변환해야 함
+    // final imageBytes = await encodeImageAsBytes(image);
 
-    final postData = {
-      "image": base64Image,
-      "member_idx": "1",
-      "category": "1",
-      "board_img" : "/media/commonfile/202307/17/5cabaf7efcd88b7c40326a48234c82b4.jpg",
-    };
+    //png, jpg 등만 올릴 수 있음
 
-    //Url
-    endPoint = '/board_v_1_0_0/board_reg_in';
+    String filenameWithExtension = getFilenameWithExtension(image.path);
 
-    Response response = await Dio().post(
-      baseUrl + endPoint,
-      data: FormData.fromMap(postData),
+    // print(filenameWithExtension);
+    // SVG_Logo.svg.png
+
+    MultipartFile multipartFile = await MultipartFile.fromFile(
+      image.path,
+      filename: filenameWithExtension,
     );
 
+    // print('multipartFile: ${multipartFile.contentType}');
+    //application/octet-stream
+    // print('image.path: ${image.path}');
+    ///data/user/0/com.example.login/cache/e1f91660-265d-49a3-81c2-428eff0ed20e/SVG_Logo.svg.png
+
+    FormData formData = FormData.fromMap({
+      "file": multipartFile,
+    });
+
+    // print('formData: ${formData.files}');
+    // [MapEntry(file: Instance of 'MultipartFile')]
+
+    //Url
+    endPoint = '/common/fileUpload_action';
+
+    final response = await Dio().request(
+      baseUrl + endPoint,
+      options: Options(
+        method: 'POST',
+      ),
+      data: formData,
+    );
+
+    print(response.data);
     // {
-    //     "code": "1000",
-    //     "code_msg": "정상적으로 처리되었습니다."
+    // code: 1000,
+    // code_msg: 성공,
+    // file_path: /media/commonfile/202402/28/d95325759c7b77f2bcca323f94c6f5b2.png,
+    // img_width: 200,
+    // img_height: 200
     // }
 
-    if(response.data['code'] == "1000"){
+    if (response.data['code'] == "1000") {
       print(response.data['code_msg']);
-      return true;
-    }else{
+      return response;
+    } else {
       print(response.data['code']);
       print(response.data['code_msg']);
-      return false;
+      return response;
     }
   }
-  
-  
+
   //로그아웃
   Future<bool> fetchLogoutPost() async {
     await deleteUserData();
