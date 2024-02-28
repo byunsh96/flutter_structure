@@ -1,3 +1,5 @@
+import 'package:login/config/constant.dart';
+
 class Model_board_list{
   Model_board_list({
     this.code,
@@ -74,7 +76,7 @@ class Board{
     member_img : json["member_img"],
     member_img_width : json["member_img_width"],
     member_img_height : json["member_img_height"],
-    board_img : json["board_img"],
+    board_img : APIBASEURL+json["board_img"],
     img_width : json["img_width"],
     img_height : json["img_height"],
     category : json["category"],

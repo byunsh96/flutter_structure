@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:login/config/constant.dart';
 import 'package:login/models/model_board_list.dart';
 import 'package:login/services/api_dio.dart';
 import 'package:login/widgets/custometextfiled.dart';
@@ -16,7 +17,6 @@ class Board_detail extends StatelessWidget{
   }) : super(key:key);
 
   var logger = Logger();
-
 
   @override
   Widget build(BuildContext context) {
@@ -46,10 +46,12 @@ class Board_detail extends StatelessWidget{
               color: Colors.grey[300],
               child: Text(board.contents!),
             ),
+            SizedBox(height: 8),
+            Image.network(board.board_img!),
           ],
         ),
       ),
     );
   }
-
 }
+

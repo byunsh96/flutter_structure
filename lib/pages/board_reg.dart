@@ -19,6 +19,7 @@ class _Board_regState extends State<Board_reg>{
   TextEditingController controller = TextEditingController();
   ApiDio apiDio = ApiDio();
 
+  // text 입력 후 이미지 업로드하면 초기화 됨
   Future getImage() async {
     final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
 
@@ -44,6 +45,13 @@ class _Board_regState extends State<Board_reg>{
             children: <Widget>[
               CustomTextField(controller: controller),
               CustomTextFormField(controller: controller2),
+              Container(
+                child: Center(
+                  child: _image == null
+                      ? Text('No image selected.')
+                      : Image.file(_image!), // 선택된 이미지를 화면에 표시
+                ),
+              ),
               ElevatedButton(
                 onPressed: () async {
                   bool result_bool = await apiDio.insert_board_reg(
